@@ -1,0 +1,78 @@
+To fully complete the assignment, you need to be familiar with the topic up to lecture 6 (linkedlist). Practice the sample code and practical worksheet.
+
+In practice, you can start the assignment once you are familiar with File IO lecture (lecture 5) (and possibly struct). You can add the UNDO feature at the end after you completed the whole game.
+
+Start early because you will have other assignments as well. Keep in mind that "having multiple assignments due on the same day/week" is not a reason for extension.
+
+
+Assignment components:
+
+(1) FILE IO and Game Interface
+
+Start with command line arguments to get the filename.
+Open the file successfully, then read the first two integers. (row and columns of the playable area)
+Create 2D array to store the location of all game components.
+The remaining integers represents the location of all the components of the game. Read them and fill the array.
+To verify correct implementation, print the game interface on the terminal screen. (You can clear the screen everytime before printing the interface)
+
+(2) Random enemy direction
+
+Everytime you run the program, each enemy will face one of four directions randomly. Use the pre-written random number generator for this.
+
+(3) Player movement
+
+Now, you have the full map, but no gameplay yet.
+Start by asking one char from the user.
+Check that the input is one of the valid command: 'w', 's', 'a', 'd', 'u'  (any other keys are ignored)
+Leave UNDO feature alone for now, you can do this after completing the whole game.
+Update the player position, and reprint the map. Please do a lot of testing to ensure correctness.
+You can do this in a loop to test multiple movement.
+Then you can add a restriction where the Player cannot go inside the Wall. (If the player attempts it, the game just simply does not update the position)
+
+
+(4) Winning the Game
+
+Add the winning condition when the Player reaches the Goal. This can be used as a loop exit condition.
+
+(5) Losing the Game by reaching the enemy
+
+Now, add the losing condition when the Player directly reaches the location of any enemy.
+
+(6) Enemy rotation
+
+So far, the enemies are not rotating yet. You can write the algorithm to make them rotate 90 degrees clockwise for every action the Player takes. (Including the attempt to go into the Wall or go outside the playable area.)
+Please update the map everytime.
+
+
+(7) Player detection
+
+This player detection is applied on each enemy. This algorithm consists of 2 steps:
+  (a) First, check if the Player is within the line of sight of the enemy (regardless the existence of the Wall). For example, if the enemy is facing left '<', then we check if the player is within the same row, AND also located on lower column.
+
+  (b) Second, we then check the existence of any wall between the Player and the Enemy. If there is no Wall, then it is considered "DETECTED". If there is at least one well, then it is considered "SAFE", and nothing happens.
+
+  For a quick test, you can print something like "DETECTED!!" on the terminal. (only for testing purposes, not final product)
+
+NOTE: If you have different idea on how to implement this, feel free to do that as long as it works correctly.
+
+(8) Enemy chasing animation
+
+After you completed Player detection algorithm, it is time to add animation into it.
+Please ensure you have watched general supplementary video on how to use newSleep(n) function to let the program sleep n seconds.
+The main idea is to move the enemy one step at a time towards the Player, reprint the map, then sleep for short time (e.g 0.5 seconds)
+Feel free to change the sleeping time, but it should not be too long.
+
+NOTE: If somehow there are multiple enemies detecting the player at the same frame, then only one of them is required to do the animation. (Does not matter which one)
+
+
+(9) UNDO feature with Linked List
+
+Once the whole game is completed, then you can add UNDO feature.
+You need to write Generic linkedlist data structure beforehand. Complete the practical worksheet on this topic.
+
+Store necessary information at the start of linked list everytime the Player moves. (including hitting the Wall or the Map border)
+Retrieve information at the start of the linked list as well when 'u' key is pressed. (stack structure)
+
+Pressing 'u' while the linkedlist is empty does nothing.
+
+NOTE: Please do a lot of testing on every step. This makes it easier to debug.
