@@ -17,23 +17,42 @@ int main(int argc, char* argv[])
         printf("Error opening file.\n");
         return 1;
     }
-    
-    char buffer[100];
 
-    //while (!feof(pf)) {
-    //    double **data = fgetc(pf);
-    //    printf("%f", data[i][j]);  // Print each line from the file
-    //}
-
-    for(i = 0; i < rows; i++)
-    {
-        for(j = 0; j < cols; j++)
-        {
-            double **data = fgets(buffer, sizeof(buffer), pf);
-            printf("%f", data[i][j]);
-        }
-        //fputc('\n', dataFile);
+    // Read rows and cols from the file (assuming the first two numbers are rows and cols)
+    if (fscanf(pf, "%d %d", &rows, &cols) != 2) {
+        printf("Error reading matrix dimensions.\n");
+        fclose(pf);
+        return 1;
     }
+
+    // Allocate memory for the matrix
+    double **data = malloc(rows * sizeof(double *));
+    for (i = 0; i < rows; i++) {
+        data[i] = malloc(cols * sizeof(double));
+    }
+
+    // Read the matrix data
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            if (fscanf(pf, "%lf", &data[i][j]) != 1) {
+                printf("Error reading matrix data.\n");
+                // Free allocated memory before returning
+                for (int k = 0; k <= i; k++) free(data[k]);
+                free(data);
+                fclose(pf);
+                return 1;
+            }
+            printf("%f ", data[i][j]);
+        }
+        printf("\n");
+        plot(data, rows, cols);
+    }
+
+    // Free allocated memory
+    for (i = 0; i < rows; i++) {
+        free(data[i]);
+    }
+    free(data);
 
     fclose(pf);
     return 0;
