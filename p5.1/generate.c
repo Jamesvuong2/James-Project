@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
         fputc('\n', inputfile);
     }
 
-    /* Write the gnuplot script file.  */
+    /* Write the gnuplot script file. */
     fprintf(scriptFile, 
         "set pm3d\n"
         "splot \"%s\" matrix with pm3d notitle\n"
