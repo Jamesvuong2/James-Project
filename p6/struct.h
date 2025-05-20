@@ -7,6 +7,6 @@ typedef struct {
     int year;
     int week;
     char topic[100];
-}Log;
+} Log;
 
 #endif
