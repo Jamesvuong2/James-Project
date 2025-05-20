@@ -1,53 +1,76 @@
+// generate.c
+// Created 19/05/2025
+// Worksheet 5
+// ID: 23180228
+// Created by James Vuong
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "plot.h"
+#include <time.h>
+#include "randomarray.h"
+#include "randomarray.c"
 
-int main(int argc, char* argv[])
-{
-        for (int i = 0; i < argc; i++) {
-        printf("%s\n", argv[i]);
-    }
-
-    int i, j;
-    FILE *inputfile;
-    FILE* scriptFile;
-
-    double **data;
-    const char* filename = argv[1];
-    int rows = atoi(argv[2]);
-    int cols = atoi(argv[3]);
-    char command[250];
-    char* scriptFilename;
-
-    if (inputfile == NULL) {
-        printf("Error opening file.\n");
+int main(int argc, char* argv[]) {
+    if (argc != 4) {
+        printf("Usage: %s <filename> <rows> <cols>\n", argv[0]);
         return 1;
     }
 
-    /* Write the 2D data to file. */
-    for(i = 0; i < rows; i++)
-    {
-        for(j = 0; j < cols; j++)
-        {
-            fprintf(inputfile, "%f ", data[i][j]);
-        }
-        fputc('\n', inputfile);
+    const char* filename = argv[1];
+    int rows = atoi(argv[2]);
+    int cols = atoi(argv[3]);
+
+    if (rows <= 0 || cols <= 0) {
+        printf("Rows and columns must be positive integers.\n");
+        return 1;
     }
 
-    /* Write the gnuplot script file. */
-    fprintf(scriptFile, 
-        "set pm3d\n"
-        "splot \"%s\" matrix with pm3d notitle\n"
-        "pause -1 \"Press Enter\"\n", 
-        filename);
+    // Allocate memory for 2D array
+    double** array = malloc(rows * sizeof(double*));
+    if (array == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+    for (int i = 0; i < rows; i++) {
+        array[i] = malloc(cols * sizeof(double));
+        if (array[i] == NULL) {
+            printf("Memory allocation failed.\n");
+            // Free previously allocated memory
+            for (int k = 0; k < i; k++) free(array[k]);
+            free(array);
+            return 1;
+        }
+    }
 
-    /* Ensure the data is actually written to disk prior to running gnuplot. */
-    fflush(inputfile);
-    fflush(scriptFile);
+    // Fill the array with random values using randomArray()
+    srand((unsigned int)time(NULL));
+    randomArray(array, rows, cols, 0);
 
-    /* Run gnuplot itself. */
-    sprintf(command, "gnuplot %s </dev/tty", scriptFilename);
-    return system(command);
+    FILE* file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error opening file for writing.\n");
+        // Free memory
+        for (int i = 0; i < rows; i++) free(array[i]);
+        free(array);
+        return 1;
+    }
 
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            fprintf(file, "%f", array[i][j]);
+            if (j < cols - 1) {
+                fputc(' ', file);
+            }
+        }
+        fputc('\n', file);
+    }
+
+    fclose(file);
+
+    // Free memory
+    for (int i = 0; i < rows; i++) free(array[i]);
+    free(array);
+
+    printf("File '%s' generated with %d rows and %d columns.\n", filename, rows, cols);
     return 0;
 }
