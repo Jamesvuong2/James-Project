@@ -1,3 +1,5 @@
+// This program reads from a log file and prints out its contents in the terminal.
+
 #include <stdio.h>
 
 int main(int argc, char* argv[])

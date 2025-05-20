@@ -1,3 +1,5 @@
+// This was just some experimentation I did during the lab.
+
 #include <stdio.h>
 
 int main(int argc, char* argv[])

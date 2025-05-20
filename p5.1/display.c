@@ -1,3 +1,5 @@
+// This program reads the contents of a file and displays them on the standard output.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

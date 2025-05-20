@@ -58,7 +58,7 @@ int main() {
     // Print the log entries
     printf("Log Entries:\n");
     // Function to print a single log entry
-    void printLogEntry(void *data);
+    void printLogEntry(void *data);     // I have no idea why this needs a ";"
     {
         Log *entry = (Log *)data;
         printf("%02d/%02d/%d (Week %d) : %s", entry->day, entry->month, entry->year, entry->week, entry->topic);

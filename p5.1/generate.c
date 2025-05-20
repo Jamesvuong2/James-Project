@@ -4,6 +4,8 @@
 // ID: 23180228
 // Created by James Vuong
 
+// This program creates a 2D array and then fills it with random values.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
