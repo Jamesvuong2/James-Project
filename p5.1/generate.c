@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include "randomarray.h"
 #include "randomarray.c"
@@ -35,7 +36,6 @@ int main(int argc, char* argv[]) {
         array[i] = malloc(cols * sizeof(double));
         if (array[i] == NULL) {
             printf("Memory allocation failed.\n");
-            // Free previously allocated memory
             for (int k = 0; k < i; k++) free(array[k]);
             free(array);
             return 1;
@@ -46,13 +46,17 @@ int main(int argc, char* argv[]) {
     srand((unsigned int)time(NULL));
     randomArray(array, rows, cols, 0);
 
-    FILE* file = fopen(filename, "w");
-    if (file == NULL) {
-        printf("Error opening file for writing.\n");
-        // Free memory
-        for (int i = 0; i < rows; i++) free(array[i]);
-        free(array);
-        return 1;
+    FILE* file;
+    if (strcmp(filename, "-") == 0) {
+        file = stdout;
+    } else {
+        file = fopen(filename, "w");
+        if (file == NULL) {
+            printf("Error opening file for writing.\n");
+            for (int i = 0; i < rows; i++) free(array[i]);
+            free(array);
+            return 1;
+        }
     }
 
     for (int i = 0; i < rows; i++) {
@@ -65,9 +69,10 @@ int main(int argc, char* argv[]) {
         fputc('\n', file);
     }
 
-    fclose(file);
+    if (file != stdout) {
+        fclose(file);
+    }
 
-    // Free memory
     for (int i = 0; i < rows; i++) free(array[i]);
     free(array);
 

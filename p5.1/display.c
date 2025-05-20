@@ -1,59 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "plot.h"
+#include <string.h>
 
-int main(int argc, char* argv[])
-{
-        for (int i = 0; i < argc; i++) {
-        printf("%s\n", argv[i]);
-    }
-
-    int rows, cols;
-    int i, j;
-
-    FILE *pf = fopen(argv[1], "r");
-
-    if (pf == NULL) {
-        printf("Error opening file.\n");
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <filename>\n", argv[0]);
         return 1;
     }
 
-    // Read rows and cols from the file (assuming the first two numbers are rows and cols)
-    if (fscanf(pf, "%d %d", &rows, &cols) != 2) {
-        printf("Error reading matrix dimensions.\n");
-        fclose(pf);
-        return 1;
-    }
+    const char* filename = argv[1];
+    FILE* file;
 
-    // Allocate memory for the matrix
-    double **data = malloc(rows * sizeof(double *));
-    for (i = 0; i < rows; i++) {
-        data[i] = malloc(cols * sizeof(double));
-    }
-
-    // Read the matrix data
-    for (i = 0; i < rows; i++) {
-        for (j = 0; j < cols; j++) {
-            if (fscanf(pf, "%lf", &data[i][j]) != 1) {
-                printf("Error reading matrix data.\n");
-                // Free allocated memory before returning
-                for (int k = 0; k <= i; k++) free(data[k]);
-                free(data);
-                fclose(pf);
-                return 1;
-            }
-            printf("%f ", data[i][j]);
+    if (strcmp(filename, "-") == 0) {
+        file = stdin;
+    } else {
+        file = fopen(filename, "r");
+        if (file == NULL) {
+            printf("Error opening file for reading.\n");
+            return 1;
         }
-        printf("\n");
-        plot(data, rows, cols);
     }
 
-    // Free allocated memory
-    for (i = 0; i < rows; i++) {
-        free(data[i]);
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        printf("%s", buffer);
     }
-    free(data);
 
-    fclose(pf);
+    if (file != stdin) {
+        fclose(file);
+    }
+
     return 0;
 }
