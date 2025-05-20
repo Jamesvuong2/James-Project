@@ -1,12 +1,12 @@
 /*
- * File: LinkedListTest.c
+ * File: LinkedList.c
  * File Created: Thursday, 2nd April 2020 5:54:10 pm
  * Author: Jonathon Winter
  * -----
- * Last Modified: Friday, 3rd April 2020 2:14:40 am
- * Modified By: Jonathon Winter
+ * Last Modified: Tuesday, 20th May 2025 2:16:00 pm
+ * Modified By: James Vuong
  * -----
- * Purpose: A Test harness for a Linked List in 'C'. You are not needed to understand how it all works. 
+ * Purpose: A Test harness for a Linked List in 'C'.
  */
 
 #include <stdio.h>
