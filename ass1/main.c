@@ -1,8 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "random.h"
-#include "random.c"
+#include<termios.h>
+#include"terminal.h"
+
+void initRandom()
+{
+    srand(time(NULL));
+}
+
+int random_UCP(int low, int high)
+{
+    int number = -1;
+
+    if(low <= high)
+    {
+        number = (rand() % (high-low+1)) + low;
+    }
+
+    return number;
+}
+
+void disableBuffer()
+{
+    struct termios mode;
+
+    tcgetattr(0, &mode);
+    mode.c_lflag &= ~(ECHO | ICANON);
+    tcsetattr(0, TCSANOW, &mode);
+}
+
+void enableBuffer()
+{
+    struct termios mode;
+
+    tcgetattr(0, &mode);
+    mode.c_lflag |= (ECHO | ICANON);
+    tcsetattr(0, TCSANOW, &mode);
+}
 
 int main(int argc, char* argv[])
 {
@@ -56,12 +93,12 @@ int main(int argc, char* argv[])
     }
     printf("*\n");
 
+    const char* enemy[] = {"^", "v", ">", "<"};
+
+
     for (i = 0; i < rows; i++) {
         printf("*");
         for (j = 0; j < cols; j++) {
-            const char* enemy[] = {"^", "v", ">", "<"};
-            int enemydirection = random_UCP(0, 3);
-
             /* Map numbers to ASCII characters */
             char c;
             switch (data[i][j]) {
@@ -69,7 +106,11 @@ int main(int argc, char* argv[])
                 case 1: c = 'P'; break; /* Map 1 to 'P' */
                 case 2: c = 'G'; break; /* Map 2 to 'G' */
                 case 3: c = 'O'; break; /* Map 3 to 'O' */
-                case 4: c = *enemy[enemydirection]; break; /* Map 4 to enemy direction */
+                case 4: {
+                    int enemydirection = random_UCP(0, 3); /* Randomize direction for each enemy */
+                    c = *enemy[enemydirection];
+                    break;
+                }
                 default: c = '?'; break; /* Map unknown numbers to '?' */
             }
             printf("%c", c);
