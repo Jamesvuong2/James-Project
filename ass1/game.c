@@ -109,7 +109,6 @@ void game(char *filename)
     FILE *pf;
     int **data;
     const char* enemy[] = {"^", "v", ">", "<"};
-    int enemyFacingPlayer;
     char input;
     int result;
 
@@ -181,35 +180,43 @@ void game(char *filename)
                     case 2: c = 'G'; break; /* Map 2 to 'G' */
                     case 3: c = 'O'; break; /* Map 3 to 'O' */
                     case 4: {
-                        c = *enemy[enemydirection];
 
                         /* Check if the enemy is facing the player */
                         if (enemydirection == 0 && i > 1 && j >= 0 && j < cols &&
                             (data[i - 1][j] == 1 || data[i - 2][j] == 1)) {
+                            if (data[i - 1][j] == 1) {
+                                result = 2; /* Enemy touches the player */
+                            }
                             data[i][j] = 0;
                             data[i - 1][j] = 4; /* Move enemy up */
-                            enemyFacingPlayer = 1;
                         }
                         if (enemydirection == 1 && i < rows - 2 && j >= 0 && j < cols &&
                             (data[i + 1][j] == 1 || data[i + 2][j] == 1)) {
+                            if (data[i + 1][j] == 1) {
+                                result = 2; /* Enemy touches the player */
+                            }
                             data[i][j] = 0;
                             data[i + 1][j] = 4; /* Move enemy down */
-                            enemyFacingPlayer = 1;
                         }
                         if (enemydirection == 2 && j < cols - 2 && i >= 0 && i < rows &&
                             (data[i][j + 1] == 1 || data[i][j + 2] == 1)) {
+                            if (data[i][j + 1] == 1) {
+                                result = 2; /* Enemy touches the player */
+                            }
                             data[i][j] = 0;
                             data[i][j + 1] = 4; /* Move enemy right */
-                            enemyFacingPlayer = 1;
                         }
                         if (enemydirection == 3 && j > 1 && i >= 0 && i < rows &&
                             (data[i][j - 1] == 1 || data[i][j - 2] == 1)) {
+                            if (data[i][j - 1] == 1) {
+                                result = 2; /* Enemy touches the player */
+                            }
                             data[i][j] = 0;
                             data[i][j - 1] = 4; /* Move enemy left */
-                            enemyFacingPlayer = 1;
                         }
                         else {
                             enemydirection = random_UCP(0, 3); /* Randomizes the direction for each enemy */
+                            c = *enemy[enemydirection];
                         }
                         break;
                     }
@@ -236,9 +243,6 @@ void game(char *filename)
         /* Moves the player based on the input */
         result = movePlayer(data, rows, cols, input);
         /* Break the loop if an enemy is facing the player */
-        if (enemyFacingPlayer) {
-            result = 2;
-        }
         if (result == 1) {
             printf("You win.\n");
             break;
