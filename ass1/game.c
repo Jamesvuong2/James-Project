@@ -111,6 +111,7 @@ void game(char *filename)
     const char* enemy[] = {"^", "v", ">", "<"};
     char input;
     int result;
+    int rcontact;
 
     pf = fopen(filename, "r");
 
@@ -185,7 +186,7 @@ void game(char *filename)
                         if (enemydirection == 0 && i > 1 && j >= 0 && j < cols &&
                             (data[i - 1][j] == 1 || data[i - 2][j] == 1)) {
                             if (data[i - 1][j] == 1) {
-                                result = 2; /* Enemy touches the player */
+                                rcontact = 2; /* Enemy touches the player */
                             }
                             else if (i - 1 >= 0) { /* Boundary check */
                                 data[i][j] = 0;
@@ -195,7 +196,7 @@ void game(char *filename)
                         if (enemydirection == 1 && i < rows - 2 && j >= 0 && j < cols &&
                             (data[i + 1][j] == 1 || data[i + 2][j] == 1)) {
                             if (data[i + 1][j] == 1) {
-                                result = 2; /* Enemy touches the player */
+                                rcontact = 2; /* Enemy touches the player */
                             }
                             else if (i + 1 < rows) { /* Boundary check */
                                 data[i][j] = 0;
@@ -205,7 +206,7 @@ void game(char *filename)
                         if (enemydirection == 2 && j < cols - 2 && i >= 0 && i < rows &&
                             (data[i][j + 1] == 1 || data[i][j + 2] == 1)) {
                             if (data[i][j + 1] == 1) {
-                                result = 2; /* Enemy touches the player */
+                                rcontact = 2; /* Enemy touches the player */
                             }
                             else if (j + 1 < cols) { /* Boundary check */
                                 data[i][j] = 0;
@@ -215,7 +216,7 @@ void game(char *filename)
                         if (enemydirection == 3 && j > 1 && i >= 0 && i < rows &&
                             (data[i][j - 1] == 1 || data[i][j - 2] == 1)) {
                             if (data[i][j - 1] == 1) {
-                                result = 2; /* Enemy touches the player */
+                                rcontact = 2; /* Enemy touches the player */
                             }
                             else if (j - 1 >= 0) { /* Boundary check */
                                 data[i][j] = 0;
@@ -254,7 +255,7 @@ void game(char *filename)
         if (result == 1) {
             printf("You win.\n");
             break;
-        } else if (result == 2) {
+        } else if (result == 2 || rcontact == 1) {
             printf("You are ded.\n");
             break;
         }
