@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
         data[i] = malloc(cols * sizeof(int));
     }
 
-    /* Read the matrix data and map numbers to ASCII characters */
+    /* Read the matrix data */
     for (i = 0; i < rows; i++) {
         for (j = 0; j < cols; j++) {
             if (fscanf(pf, "%d", &data[i][j]) != 1) {
@@ -44,7 +44,21 @@ int main(int argc, char* argv[])
                 fclose(pf);
                 return 1;
             }
+        }
+    }
 
+    fclose(pf);
+
+    /* Print the map with borders */
+    printf("*");
+    for (j = 0; j < cols; j++) {
+        printf("*");
+    }
+    printf("*\n");
+
+    for (i = 0; i < rows; i++) {
+        printf("*");
+        for (j = 0; j < cols; j++) {
             const char* enemy[] = {"^", "v", ">", "<"};
             int enemydirection = random_UCP(0, 3);
 
@@ -52,16 +66,22 @@ int main(int argc, char* argv[])
             char c;
             switch (data[i][j]) {
                 case 0: c = ' '; break; /* Map 0 to space */
-                case 1: c = 'P'; break; /* Map 1 to 'A' */
-                case 2: c = 'G'; break; /* Map 2 to 'B' */
-                case 3: c = 'O'; break; /* Map 3 to '#' */
-                case 4: c = *enemy[enemydirection]; break; /* Map 4 to '*' */
+                case 1: c = 'P'; break; /* Map 1 to 'P' */
+                case 2: c = 'G'; break; /* Map 2 to 'G' */
+                case 3: c = 'O'; break; /* Map 3 to 'O' */
+                case 4: c = *enemy[enemydirection]; break; /* Map 4 to enemy direction */
                 default: c = '?'; break; /* Map unknown numbers to '?' */
             }
             printf("%c", c);
         }
-        printf("\n");
+        printf("*\n");
     }
+
+    printf("*");
+    for (j = 0; j < cols; j++) {
+        printf("*");
+    }
+    printf("*\n");
 
     /* Free allocated memory */
     for (i = 0; i < rows; i++) {
@@ -69,6 +89,5 @@ int main(int argc, char* argv[])
     }
     free(data);
 
-    fclose(pf);
     return 0;
 }
