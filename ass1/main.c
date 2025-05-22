@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "random.h"
+#include "random.c"
 
 int main(int argc, char* argv[])
 {
-        for (int i = 0; i < argc; i++) {
-        printf("%s\n", argv[i]);
+    if (argc != 2) {
+        printf("Usage: %s <filename>\n", argv[0]);
+        return 1;
     }
 
     int rows, cols;
@@ -26,14 +29,15 @@ int main(int argc, char* argv[])
     }
 
     /* Allocate memory for the 2D array */
-    int **data = malloc(rows * sizeof(double *));
+    int **data = malloc(rows * sizeof(int *));
     for (i = 0; i < rows; i++) {
-        data[i] = malloc(cols * sizeof(double));
+        data[i] = malloc(cols * sizeof(int));
     }
 
+    /* Read the matrix data and map numbers to ASCII characters */
     for (i = 0; i < rows; i++) {
         for (j = 0; j < cols; j++) {
-            if (fscanf(pf, "%lf", &data[i][j]) != 1) {
+            if (fscanf(pf, "%d", &data[i][j]) != 1) {
                 printf("Error reading matrix data.\n");
                 for (int k = 0; k <= i; k++) free(data[k]);
                 free(data);
@@ -41,18 +45,21 @@ int main(int argc, char* argv[])
                 return 1;
             }
 
+            const char* enemy[] = {"^", "v", ">", "<"};
+            int enemydirection = random_UCP(0, 3);
+
             /* Map numbers to ASCII characters */
             char c;
             switch (data[i][j]) {
-                case 0: c = ' '; break; // Map 0 to space
-                case 1: c = 'A'; break; // Map 1 to 'A'
-                case 2: c = 'B'; break; // Map 2 to 'B'
-                case 3: c = '#'; break; // Map 3 to '#'
-                case 4: c = '*'; break; // Map 4 to '*'
-                default: c = '?'; break; // Map unknown numbers to '?'
+                case 0: c = ' '; break; /* Map 0 to space */
+                case 1: c = 'P'; break; /* Map 1 to 'A' */
+                case 2: c = 'G'; break; /* Map 2 to 'B' */
+                case 3: c = 'O'; break; /* Map 3 to '#' */
+                case 4: c = *enemy[enemydirection]; break; /* Map 4 to '*' */
+                default: c = '?'; break; /* Map unknown numbers to '?' */
             }
 
-            printf("%f ", data[i][j]);
+            printf("%c", c);
         }
         printf("\n");
     }
