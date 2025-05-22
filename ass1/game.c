@@ -112,6 +112,7 @@ void game(char *filename)
     char input;
     int result;
     int rcontact;
+    int playerRow, playerCol;
 
     pf = fopen(filename, "r");
 
@@ -242,6 +243,29 @@ void game(char *filename)
         }
         printf("*\n");
 
+        /* Find the player's position */
+        playerRow = -1, playerCol = -1;
+        for (i = 0; i < rows; i++) {
+            for (j = 0; j < cols; j++) {
+                if (data[i][j] == 1) { /* Player is represented by 1 */
+                    playerRow = i;
+                    playerCol = j;
+                    break;
+                }
+            }
+            if (playerRow != -1) break;
+        }
+
+        /* Check adjacent cells for an enemy */
+        if ((playerRow > 0 && data[playerRow - 1][playerCol] == 4) || /* Above */
+            (playerRow < rows - 1 && data[playerRow + 1][playerCol] == 4) || /* Below */
+            (playerCol > 0 && data[playerRow][playerCol - 1] == 4) || /* Left */
+            (playerCol < cols - 1 && data[playerRow][playerCol + 1] == 4)) { /* Right */
+            result = 2; /* Enemy is adjacent to the player */
+            printf("You are dead.\n");
+            break;
+        }
+
         /* Gets the input from the user */
         printf("w moves the player one block above.\n"
                "s moves the player one block below.\n"
@@ -256,7 +280,7 @@ void game(char *filename)
             printf("You win.\n");
             break;
         } else if (result == 2 || rcontact == 1) {
-            printf("You are ded.\n");
+            printf("You are dead.\n");
             break;
         }
     }
