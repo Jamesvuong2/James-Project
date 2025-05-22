@@ -76,7 +76,7 @@ int movePlayer(int **data, int rows, int cols, char direction)
     else if (direction == 'a' && playerCol > 0) newCol--;       /* left */
     else if (direction == 'd' && playerCol < cols - 1) newCol++; /* right */
 
-    /* Checks if the new position is valid with the goal being 2 and air being 0 */
+    /* Checks if the new position is valid with the goal being 2, air being 0 and enemy being 4 */
     if (data[newRow][newCol] == 0) {
         data[playerRow][playerCol] = 0; /* Clears the old position */
         data[newRow][newCol] = 1;       /* Sets the new position */
@@ -85,6 +85,11 @@ int movePlayer(int **data, int rows, int cols, char direction)
         data[playerRow][playerCol] = 0; /* Clears the old position */
         data[newRow][newCol] = 1;       /* Sets the new position */
         return 1; /* Player reached the goal */
+    }
+    else if (data[newRow][newCol] == 4) {
+        data[playerRow][playerCol] = 0; /* Clears the old position */
+        data[newRow][newCol] = 1;       /* Sets the new position */
+        return 2; /* Player touched enemy */
     }
     return 0; /* Player did not move */
 }
@@ -180,9 +185,13 @@ int main(int argc, char* argv[])
         char input = interface();
 
         /* Moves the player based on the input */
-        if (movePlayer(data, rows, cols, input)) {
-            printf("Congratulations! You reached the goal!\n");
-            break; /* Exit the loop if the player reaches the goal */
+        int result = movePlayer(data, rows, cols, input);
+        if (result == 1) {
+            printf("You win.\n");
+            break;
+        } else if (result == 2) {
+            printf("You are ded.\n");
+            break;
         }
     }
 
