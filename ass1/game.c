@@ -108,10 +108,10 @@ void game(char *filename)
     int i, j, k;
     FILE *pf;
     int **data;
-    const char* enemy[] = {"^", "v", ">", "<"}; /* Declare constants at the start */
-    int enemyFacingPlayer; /* Declare flag variable at the start */
-    char input; /* Declare input variable at the start */
-    int result; /* Declare result variable at the start */
+    const char* enemy[] = {"^", "v", ">", "<"};
+    int enemyFacingPlayer;
+    char input;
+    int result;
 
     pf = fopen(filename, "r");
 
@@ -184,22 +184,26 @@ void game(char *filename)
                         c = *enemy[enemydirection];
 
                         /* Check if the enemy is facing the player */
-                        if (enemydirection == 0 && i > 1 && (data[i - 1][j] == 1 || data[i - 2][j] == 1)) {
+                        if (enemydirection == 0 && i > 1 && j >= 0 && j < cols &&
+                            (data[i - 1][j] == 1 || data[i - 2][j] == 1)) {
                             data[i][j] = 0;
                             data[i - 1][j] = 4; /* Move enemy up */
                             enemyFacingPlayer = 1;
                         }
-                        if (enemydirection == 1 && i < rows - 2 && (data[i + 1][j] == 1 || data[i + 2][j] == 1)) {
+                        if (enemydirection == 1 && i < rows - 2 && j >= 0 && j < cols &&
+                            (data[i + 1][j] == 1 || data[i + 2][j] == 1)) {
                             data[i][j] = 0;
                             data[i + 1][j] = 4; /* Move enemy down */
                             enemyFacingPlayer = 1;
                         }
-                        if (enemydirection == 2 && j < cols - 2 && (data[i][j + 1] == 1 || data[i][j + 2] == 1)) {
+                        if (enemydirection == 2 && j < cols - 2 && i >= 0 && i < rows &&
+                            (data[i][j + 1] == 1 || data[i][j + 2] == 1)) {
                             data[i][j] = 0;
                             data[i][j + 1] = 4; /* Move enemy right */
                             enemyFacingPlayer = 1;
                         }
-                        if (enemydirection == 3 && j > 1 && (data[i][j - 1] == 1 || data[i][j - 2] == 1)) {
+                        if (enemydirection == 3 && j > 1 && i >= 0 && i < rows &&
+                            (data[i][j - 1] == 1 || data[i][j - 2] == 1)) {
                             data[i][j] = 0;
                             data[i][j - 1] = 4; /* Move enemy left */
                             enemyFacingPlayer = 1;
