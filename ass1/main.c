@@ -3,9 +3,10 @@
 #include <string.h>
 #include <time.h>
 #include "random.h"
-#include<termios.h>
-#include"terminal.h"
+#include <termios.h>
+#include "terminal.h"
 
+/* Initialises the random functions */
 void initRandom()
 {
     srand(time(NULL));
@@ -41,6 +42,47 @@ void enableBuffer()
     tcsetattr(0, TCSANOW, &mode);
 }
 
+int interface()
+{
+    char input;
+
+    disableBuffer(); /* Disables terminal input buffering and echo */
+    input = getchar(); /* Waits for a single key press */
+    enableBuffer(); /* Re-enables terminal input buffering and echo */
+
+    return input;
+}
+
+void movePlayer(int **data, int rows, int cols, char direction)
+{
+    int playerRow = -1, playerCol = -1;
+
+    /* This finds the current position of the player (with P being 1) */
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (data[i][j] == 1) {
+                playerRow = i;
+                playerCol = j;
+                break;
+            }
+        }
+        if (playerRow != -1) break;
+    }
+
+    /* Determines the new position based on the input direction */
+    int newRow = playerRow, newCol = playerCol;
+    if (direction == 'w' && playerRow > 0) newRow--;       /* up */
+    else if (direction == 's' && playerRow < rows - 1) newRow++; /* down */
+    else if (direction == 'a' && playerCol > 0) newCol--;       /* left */
+    else if (direction == 'd' && playerCol < cols - 1) newCol++; /* right */
+
+    /* Checks if the new position is valid with the goal being 2 and air being 0 */
+    if (data[newRow][newCol] == 0 || data[newRow][newCol] == 2) {
+        data[playerRow][playerCol] = 0; /* Clears the old position */
+        data[newRow][newCol] = 1;       /* Sets the new position */
+    }
+}
+
 int main(int argc, char* argv[])
 {
     if (argc != 2) {
@@ -58,20 +100,20 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    /* Read rows and cols from the file (assuming the first two numbers are rows and cols) */
+    /* Reads the rows and columns from the file (assuming the first two numbers are rows and columns) */
     if (fscanf(pf, "%d %d", &rows, &cols) != 2) {
         printf("Error reading matrix dimensions.\n");
         fclose(pf);
         return 1;
     }
 
-    /* Allocate memory for the 2D array */
+    /* Allocates memory for the 2D array */
     int **data = malloc(rows * sizeof(int *));
     for (i = 0; i < rows; i++) {
         data[i] = malloc(cols * sizeof(int));
     }
 
-    /* Read the matrix data */
+    /* Reads the matrix data */
     for (i = 0; i < rows; i++) {
         for (j = 0; j < cols; j++) {
             if (fscanf(pf, "%d", &data[i][j]) != 1) {
@@ -86,45 +128,56 @@ int main(int argc, char* argv[])
 
     fclose(pf);
 
-    /* Print the map with borders */
-    printf("*");
-    for (j = 0; j < cols; j++) {
-        printf("*");
-    }
-    printf("*\n");
-
-    const char* enemy[] = {"^", "v", ">", "<"};
-
-
-    for (i = 0; i < rows; i++) {
+    while (1) {
+        /* Prints the map */
         printf("*");
         for (j = 0; j < cols; j++) {
-            /* Map numbers to ASCII characters */
-            char c;
-            switch (data[i][j]) {
-                case 0: c = ' '; break; /* Map 0 to space */
-                case 1: c = 'P'; break; /* Map 1 to 'P' */
-                case 2: c = 'G'; break; /* Map 2 to 'G' */
-                case 3: c = 'O'; break; /* Map 3 to 'O' */
-                case 4: {
-                    int enemydirection = random_UCP(0, 3); /* Randomize direction for each enemy */
-                    c = *enemy[enemydirection];
-                    break;
-                }
-                default: c = '?'; break; /* Map unknown numbers to '?' */
-            }
-            printf("%c", c);
+            printf("*");
         }
         printf("*\n");
-    }
 
-    printf("*");
-    for (j = 0; j < cols; j++) {
+        const char* enemy[] = {"^", "v", ">", "<"};
+
+        for (i = 0; i < rows; i++) {
+            printf("*");
+            for (j = 0; j < cols; j++) {
+                /* Map numbers to ASCII characters */
+                char c;
+                switch (data[i][j]) {
+                    case 0: c = ' '; break; /* Map 0 to space */
+                    case 1: c = 'P'; break; /* Map 1 to 'P' */
+                    case 2: c = 'G'; break; /* Map 2 to 'G' */
+                    case 3: c = 'O'; break; /* Map 3 to 'O' */
+                    case 4: {
+                        int enemydirection = random_UCP(0, 3); /* Randomizes the direction for each enemy */
+                        c = *enemy[enemydirection];
+                        break;
+                    }
+                    default: c = '?'; break; /* Maps unknown numbers to '?', this is the default */
+                }
+                printf("%c", c);
+            }
+            printf("*\n");
+        }
+
         printf("*");
-    }
-    printf("*\n");
+        for (j = 0; j < cols; j++) {
+            printf("*");
+        }
+        printf("*\n");
 
-    /* Free allocated memory */
+        /* Gets the input from the user */
+        printf("w moves the player one block above.\n"
+               "s moves the player one block below.\n"
+               "a moves the player one block left.\n"
+               "d moves the player one block right.\n");
+        char input = interface();
+
+        /* Moves the player based on the input */
+        movePlayer(data, rows, cols, input);
+    }
+
+    /* Frees allocated memory */
     for (i = 0; i < rows; i++) {
         free(data[i]);
     }
