@@ -183,8 +183,8 @@ void game(char *filename)
                     case 4: {
 
                         /* Check if the enemy is facing the player */
-                        if (enemydirection == 0 && i > 1 && j >= 0 && j < cols &&
-                            (data[i - 1][j] == 1 || data[i - 2][j] == 1)) {
+                        if (enemydirection == 0 && i > 3 && j >= 0 && j < cols &&
+                            (data[i - 1][j] == 1 || data[i - 2][j] == 1 || data[i - 3][j] == 1 || data[i - 4][j] == 1)) {
                             if (data[i - 1][j] == 1) {
                                 rcontact = 2; /* Enemy touches the player */
                             }
@@ -193,8 +193,8 @@ void game(char *filename)
                                 data[i - 1][j] = 4; /* Move enemy up */
                             }
                         }
-                        if (enemydirection == 1 && i < rows - 2 && j >= 0 && j < cols &&
-                            (data[i + 1][j] == 1 || data[i + 2][j] == 1)) {
+                        if (enemydirection == 1 && i < rows - 4 && j >= 0 && j < cols &&
+                            (data[i + 1][j] == 1 || data[i + 2][j] == 1 || data[i + 3][j] == 1 || data[i + 4][j] == 1)) {
                             if (data[i + 1][j] == 1) {
                                 rcontact = 2; /* Enemy touches the player */
                             }
@@ -203,8 +203,8 @@ void game(char *filename)
                                 data[i + 1][j] = 4; /* Move enemy down */
                             }
                         }
-                        if (enemydirection == 2 && j < cols - 2 && i >= 0 && i < rows &&
-                            (data[i][j + 1] == 1 || data[i][j + 2] == 1)) {
+                        if (enemydirection == 2 && j < cols - 4 && i >= 0 && i < rows &&
+                            (data[i][j + 1] == 1 || data[i][j + 2] == 1 || data[i][j + 3] == 1 || data[i][j + 4] == 1)) {
                             if (data[i][j + 1] == 1) {
                                 rcontact = 2; /* Enemy touches the player */
                             }
@@ -213,8 +213,8 @@ void game(char *filename)
                                 data[i][j + 1] = 4; /* Move enemy right */
                             }
                         }
-                        if (enemydirection == 3 && j > 1 && i >= 0 && i < rows &&
-                            (data[i][j - 1] == 1 || data[i][j - 2] == 1)) {
+                        if (enemydirection == 3 && j > 3 && i >= 0 && i < rows &&
+                            (data[i][j - 1] == 1 || data[i][j - 2] == 1 || data[i][j - 3] == 1 || data[i][j - 4] == 1)) {
                             if (data[i][j - 1] == 1) {
                                 rcontact = 2; /* Enemy touches the player */
                             }
