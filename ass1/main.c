@@ -148,7 +148,8 @@ int main(int argc, char* argv[])
         printf("*\n");
 
         const char* enemy[] = {"^", "v", ">", "<"};
-
+        int enemyFacingPlayer = 0; // Flag to check if an enemy is facing the player
+        
         for (i = 0; i < rows; i++) {
             printf("*");
             for (j = 0; j < cols; j++) {
@@ -162,6 +163,14 @@ int main(int argc, char* argv[])
                     case 4: {
                         int enemydirection = random_UCP(0, 3); /* Randomizes the direction for each enemy */
                         c = *enemy[enemydirection];
+
+                        /* Check if the enemy is facing the player */
+                        if ((enemydirection == 0 && i > 1 && (data[i - 1][j] == 1 || data[i - 2][j] == 1 || data[i - 3][j] == 1)) ||
+                            (enemydirection == 1 && i < rows - 2 && (data[i + 1][j] == 1 || data[i + 2][j] == 1 || data[i + 3][j] == 1)) ||
+                            (enemydirection == 2 && j < cols - 2 && (data[i][j + 1] == 1 || data[i][j + 2] == 1 || data[i][j + 3] == 1)) ||
+                            (enemydirection == 3 && j > 1 && (data[i][j - 1] == 1 || data[i][j - 2] == 1 || data[i][j - 3] == 1))) {
+                            enemyFacingPlayer = 1;
+                        }
                         break;
                     }
                     default: c = '?'; break; /* Maps unknown numbers to '?', this is the default */
@@ -186,6 +195,10 @@ int main(int argc, char* argv[])
 
         /* Moves the player based on the input */
         int result = movePlayer(data, rows, cols, input);
+        /* Break the loop if an enemy is facing the player */
+        if (enemyFacingPlayer) {
+            result = 2;
+        }
         if (result == 1) {
             printf("You win.\n");
             break;
