@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,8 +7,10 @@
 #include <termios.h>
 #include "terminal.h"
 #include "game.h"
+#include "newSleep.h"
 
-/* Initialises the random functions */
+/* Initialises the functions */
+
 void initRandom()
 {
     srand(time(NULL));
@@ -100,7 +103,7 @@ int movePlayer(int **data, int rows, int cols, char direction)
 
 void game(char *filename)
 {
-
+    int enemydirection;
     int rows, cols;
     int i, j, k;
     FILE *pf;
@@ -178,7 +181,6 @@ void game(char *filename)
                     case 2: c = 'G'; break; /* Map 2 to 'G' */
                     case 3: c = 'O'; break; /* Map 3 to 'O' */
                     case 4: {
-                        int enemydirection = random_UCP(0, 3); /* Randomizes the direction for each enemy */
                         c = *enemy[enemydirection];
 
                         /* Check if the enemy is facing the player */
@@ -201,6 +203,9 @@ void game(char *filename)
                             data[i][j] = 0;
                             data[i][j - 1] = 4; /* Move enemy left */
                             enemyFacingPlayer = 1;
+                        }
+                        else {
+                            enemydirection = random_UCP(0, 3); /* Randomizes the direction for each enemy */
                         }
                         break;
                     }

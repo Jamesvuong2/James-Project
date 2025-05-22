@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "newSleep.h"
 
 #define EMPTY 0
 #define PLAYER 1
