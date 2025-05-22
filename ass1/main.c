@@ -58,7 +58,6 @@ int main(int argc, char* argv[])
                 case 4: c = *enemy[enemydirection]; break; /* Map 4 to '*' */
                 default: c = '?'; break; /* Map unknown numbers to '?' */
             }
-
             printf("%c", c);
         }
         printf("\n");
