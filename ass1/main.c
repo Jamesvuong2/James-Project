@@ -120,9 +120,23 @@ int main(int argc, char* argv[])
 
     /* Allocates memory for the 2D array */
     int **data = malloc(rows * sizeof(int *));
+    if (data == NULL) {
+        printf("Memory allocation failed for data array.\n");
+        fclose(pf);
+        return 1;
+    }
+
     for (i = 0; i < rows; i++) {
         data[i] = malloc(cols * sizeof(int));
+        if (data[i] == NULL) {
+            printf("Memory allocation failed for row %d.\n", i);
+            for (int k = 0; k < i; k++) free(data[k]); /* Free previously allocated rows */
+            free(data);
+            fclose(pf);
+            return 1;
+        }
     }
+
 
     /* Reads the matrix data */
     for (i = 0; i < rows; i++) {
@@ -165,10 +179,24 @@ int main(int argc, char* argv[])
                         c = *enemy[enemydirection];
 
                         /* Check if the enemy is facing the player */
-                        if ((enemydirection == 0 && i > 1 && (data[i - 1][j] == 1 || data[i - 2][j] == 1 || data[i - 3][j] == 1)) ||
-                            (enemydirection == 1 && i < rows - 2 && (data[i + 1][j] == 1 || data[i + 2][j] == 1 || data[i + 3][j] == 1)) ||
-                            (enemydirection == 2 && j < cols - 2 && (data[i][j + 1] == 1 || data[i][j + 2] == 1 || data[i][j + 3] == 1)) ||
-                            (enemydirection == 3 && j > 1 && (data[i][j - 1] == 1 || data[i][j - 2] == 1 || data[i][j - 3] == 1))) {
+                        if (enemydirection == 0 && i > 1 && (data[i - 1][j] == 1 || data[i - 2][j] == 1)) {
+                            data[i][j] = 0;
+                            data[i - 1][j] = 4; /* Move enemy up */
+                            enemyFacingPlayer = 1;
+                        }
+                        if (enemydirection == 1 && i < rows - 2 && (data[i + 1][j] == 1 || data[i + 2][j] == 1)) {
+                            data[i][j] = 0;
+                            data[i + 1][j] = 4; /* Move enemy down */
+                            enemyFacingPlayer = 1;
+                        }
+                        if (enemydirection == 2 && j < cols - 2 && (data[i][j + 1] == 1 || data[i][j + 2] == 1)) {
+                            data[i][j] = 0;
+                            data[i][j + 1] = 4; /* Move enemy right */
+                            enemyFacingPlayer = 1;
+                        }
+                        if (enemydirection == 3 && j > 1 && (data[i][j - 1] == 1 || data[i][j - 2] == 1)) {
+                            data[i][j] = 0;
+                            data[i][j - 1] = 4; /* Move enemy left */
                             enemyFacingPlayer = 1;
                         }
                         break;
