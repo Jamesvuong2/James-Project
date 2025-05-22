@@ -19,6 +19,6 @@ int movePlayer(int **data, int rows, int cols, char direction);
 void printMap(int **data, int rows, int cols);
 void freeMap(int **data, int rows);
 int checkEnemyFacingPlayer(int **data, int rows, int cols);
-void game(const char *filename);
+void game(char *filename);
 
 #endif

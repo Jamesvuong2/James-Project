@@ -5,6 +5,7 @@
 #include "random.h"
 #include <termios.h>
 #include "terminal.h"
+#include "game.h"
 
 /* Initialises the random functions */
 void initRandom()
@@ -42,7 +43,7 @@ void enableBuffer()
     tcsetattr(0, TCSANOW, &mode);
 }
 
-int interface()
+char interface()
 {
     char input;
 
@@ -56,10 +57,12 @@ int interface()
 int movePlayer(int **data, int rows, int cols, char direction)
 {
     int playerRow = -1, playerCol = -1;
+    int i, j; /* Declare loop variables at the start */
+    int newRow, newCol;
 
     /* This finds the current position of the player (with P being 1) */
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
             if (data[i][j] == 1) {
                 playerRow = i;
                 playerCol = j;
@@ -70,7 +73,8 @@ int movePlayer(int **data, int rows, int cols, char direction)
     }
 
     /* Determines the new position based on the input direction */
-    int newRow = playerRow, newCol = playerCol;
+    newRow = playerRow;
+    newCol = playerCol;
     if (direction == 'w' && playerRow > 0) newRow--;       /* up */
     else if (direction == 's' && playerRow < rows - 1) newRow++; /* down */
     else if (direction == 'a' && playerCol > 0) newCol--;       /* left */

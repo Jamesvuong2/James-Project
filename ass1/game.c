@@ -5,6 +5,7 @@
 #include "random.h"
 #include <termios.h>
 #include "terminal.h"
+#include "game.h"
 
 /* Initialises the random functions */
 void initRandom()
@@ -56,10 +57,12 @@ char interface()
 int movePlayer(int **data, int rows, int cols, char direction)
 {
     int playerRow = -1, playerCol = -1;
+    int i, j; /* Declare loop variables at the start */
+    int newRow, newCol;
 
     /* This finds the current position of the player (with P being 1) */
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
             if (data[i][j] == 1) {
                 playerRow = i;
                 playerCol = j;
@@ -70,7 +73,8 @@ int movePlayer(int **data, int rows, int cols, char direction)
     }
 
     /* Determines the new position based on the input direction */
-    int newRow = playerRow, newCol = playerCol;
+    newRow = playerRow;
+    newCol = playerCol;
     if (direction == 'w' && playerRow > 0) newRow--;       /* up */
     else if (direction == 's' && playerRow < rows - 1) newRow++; /* down */
     else if (direction == 'a' && playerCol > 0) newCol--;       /* left */
@@ -98,9 +102,15 @@ void game(char *filename)
 {
 
     int rows, cols;
-    int i, j;
+    int i, j, k;
+    FILE *pf;
+    int **data;
+    const char* enemy[] = {"^", "v", ">", "<"}; /* Declare constants at the start */
+    int enemyFacingPlayer; /* Declare flag variable at the start */
+    char input; /* Declare input variable at the start */
+    int result; /* Declare result variable at the start */
 
-    FILE *pf = fopen(filename, "r");
+    pf = fopen(filename, "r");
 
     if (pf == NULL) {
         printf("Error opening file.\n");
@@ -115,7 +125,7 @@ void game(char *filename)
     }
 
     /* Allocates memory for the 2D array */
-    int **data = malloc(rows * sizeof(int *));
+    data = malloc(rows * sizeof(int *));
     if (data == NULL) {
         printf("Memory allocation failed for data array.\n");
         fclose(pf);
@@ -126,7 +136,7 @@ void game(char *filename)
         data[i] = malloc(cols * sizeof(int));
         if (data[i] == NULL) {
             printf("Memory allocation failed for row %d.\n", i);
-            for (int k = 0; k < i; k++) free(data[k]); /* Free previously allocated rows */
+            for (k = 0; k < i; k++) free(data[k]); /* Free previously allocated rows */
             free(data);
             fclose(pf);
             return;
@@ -139,7 +149,7 @@ void game(char *filename)
         for (j = 0; j < cols; j++) {
             if (fscanf(pf, "%d", &data[i][j]) != 1) {
                 printf("Error reading matrix data.\n");
-                for (int k = 0; k <= i; k++) free(data[k]);
+                for (k = 0; k <= i; k++) free(data[k]);
                 free(data);
                 fclose(pf);
                 return;
@@ -156,9 +166,6 @@ void game(char *filename)
             printf("*");
         }
         printf("*\n");
-
-        const char* enemy[] = {"^", "v", ">", "<"};
-        int enemyFacingPlayer = 0; /* Flag to check if an enemy is facing the player */
         
         for (i = 0; i < rows; i++) {
             printf("*");
@@ -215,10 +222,10 @@ void game(char *filename)
                "s moves the player one block below.\n"
                "a moves the player one block left.\n"
                "d moves the player one block right.\n");
-        char input = interface();
+        input = interface();
 
         /* Moves the player based on the input */
-        int result = movePlayer(data, rows, cols, input);
+        result = movePlayer(data, rows, cols, input);
         /* Break the loop if an enemy is facing the player */
         if (enemyFacingPlayer) {
             result = 2;
