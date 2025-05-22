@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -ansi -pedantic
 OBJ = main.o game.o
-EXEC = james_vuong23180228COMPass1
+EXEC = escape
 
 
 ifdef CUBE

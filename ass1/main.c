@@ -7,8 +7,12 @@
 #include "terminal.h"
 #include "game.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-    game("map.txt");
+    if (argc != 2) {
+        printf("Usage: %s <filename>\n", argv[0]);
+        return 1;
+    }
+    game(argv[1]);
     return 0;
 }

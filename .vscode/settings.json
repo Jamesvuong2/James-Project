@@ -6,6 +6,7 @@
         "array": "c",
         "string": "c",
         "string_view": "c",
-        "terminal.h": "c"
+        "terminal.h": "c",
+        "string.h": "c"
     }
 }
