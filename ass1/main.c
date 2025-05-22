@@ -25,8 +25,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    /* Allocate memory for the matrix */
-    double **data = malloc(rows * sizeof(double *));
+    /* Allocate memory for the 2D array */
+    int **data = malloc(rows * sizeof(double *));
     for (i = 0; i < rows; i++) {
         data[i] = malloc(cols * sizeof(double));
     }
@@ -40,6 +40,18 @@ int main(int argc, char* argv[])
                 fclose(pf);
                 return 1;
             }
+
+            /* Map numbers to ASCII characters */
+            char c;
+            switch (data[i][j]) {
+                case 0: c = ' '; break; // Map 0 to space
+                case 1: c = 'A'; break; // Map 1 to 'A'
+                case 2: c = 'B'; break; // Map 2 to 'B'
+                case 3: c = '#'; break; // Map 3 to '#'
+                case 4: c = '*'; break; // Map 4 to '*'
+                default: c = '?'; break; // Map unknown numbers to '?'
+            }
+
             printf("%f ", data[i][j]);
         }
         printf("\n");
