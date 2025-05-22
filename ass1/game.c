@@ -187,7 +187,7 @@ void game(char *filename)
                             if (data[i - 1][j] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            else {
+                            else if (i - 1 >= 0) { /* Boundary check */
                                 data[i][j] = 0;
                                 data[i - 1][j] = 4; /* Move enemy up */
                             }
@@ -197,7 +197,7 @@ void game(char *filename)
                             if (data[i + 1][j] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            else{
+                            else if (i + 1 < rows) { /* Boundary check */
                                 data[i][j] = 0;
                                 data[i + 1][j] = 4; /* Move enemy down */
                             }
@@ -207,7 +207,7 @@ void game(char *filename)
                             if (data[i][j + 1] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            else {
+                            else if (j + 1 < cols) { /* Boundary check */
                                 data[i][j] = 0;
                                 data[i][j + 1] = 4; /* Move enemy right */
                             }
@@ -217,7 +217,7 @@ void game(char *filename)
                             if (data[i][j - 1] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            else {
+                            else if (j - 1 >= 0) { /* Boundary check */
                                 data[i][j] = 0;
                                 data[i][j - 1] = 4; /* Move enemy left */
                             }
