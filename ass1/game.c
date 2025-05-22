@@ -187,32 +187,40 @@ void game(char *filename)
                             if (data[i - 1][j] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            data[i][j] = 0;
-                            data[i - 1][j] = 4; /* Move enemy up */
+                            else {
+                                data[i][j] = 0;
+                                data[i - 1][j] = 4; /* Move enemy up */
+                            }
                         }
                         if (enemydirection == 1 && i < rows - 2 && j >= 0 && j < cols &&
                             (data[i + 1][j] == 1 || data[i + 2][j] == 1)) {
                             if (data[i + 1][j] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            data[i][j] = 0;
-                            data[i + 1][j] = 4; /* Move enemy down */
+                            else{
+                                data[i][j] = 0;
+                                data[i + 1][j] = 4; /* Move enemy down */
+                            }
                         }
                         if (enemydirection == 2 && j < cols - 2 && i >= 0 && i < rows &&
                             (data[i][j + 1] == 1 || data[i][j + 2] == 1)) {
                             if (data[i][j + 1] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            data[i][j] = 0;
-                            data[i][j + 1] = 4; /* Move enemy right */
+                            else {
+                                data[i][j] = 0;
+                                data[i][j + 1] = 4; /* Move enemy right */
+                            }
                         }
                         if (enemydirection == 3 && j > 1 && i >= 0 && i < rows &&
                             (data[i][j - 1] == 1 || data[i][j - 2] == 1)) {
                             if (data[i][j - 1] == 1) {
                                 result = 2; /* Enemy touches the player */
                             }
-                            data[i][j] = 0;
-                            data[i][j - 1] = 4; /* Move enemy left */
+                            else {
+                                data[i][j] = 0;
+                                data[i][j - 1] = 4; /* Move enemy left */
+                            }
                         }
                         else {
                             enemydirection = random_UCP(0, 3); /* Randomizes the direction for each enemy */
