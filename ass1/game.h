@@ -50,4 +50,4 @@ void game(char *filename);
 
 #endif
 
-#endif // LINKEDLIST_H
+#endif

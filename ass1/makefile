@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -ansi -pedantic
-OBJ = main.o game.o
+OBJ = main.o game.o LinkedList.o
 EXEC = escape
 
 

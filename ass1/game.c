@@ -213,7 +213,6 @@ void game(char *filename)
     fclose(pf);
     gameHistory = createLinkedList();
     while (1) {
-        saveGameState(gameHistory, data, rows, cols, playerRow, playerCol, enemydirection);
         /* Prints the map */
         printf("*");
         for (j = 0; j < cols; j++) {
@@ -316,6 +315,8 @@ void game(char *filename)
             break;
         }
 
+        saveGameState(gameHistory, data, rows, cols, playerRow, playerCol, enemydirection);
+
         /* Gets the input from the user */
         printf("w moves the player one block above.\n"
                "s moves the player one block below.\n"
@@ -334,6 +335,7 @@ void game(char *filename)
 
         /* Moves the player based on the input */
         result = movePlayer(data, rows, cols, input);
+        
         /* Break the loop if an enemy is facing the player */
         if (result == 1) {
             printf("You win.\n");
