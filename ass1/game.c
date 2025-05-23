@@ -329,7 +329,6 @@ void game(char *filename)
             if (undoLastTurn(gameHistory, data, &playerRow, &playerCol, &enemydirection)) {
                 printf("Undo successful.\n");
             }
-            continue; /* Skip the rest of the loop */
         }
 
 
