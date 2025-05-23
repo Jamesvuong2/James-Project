@@ -19,5 +19,8 @@ main.o : main.c game.h
 game.o : game.c game.h
 	$(CC) $(CFLAGS) game.c -c
 
+LinkedList.o : LinkedList.c LinkedList.h
+	$(CC) $(CFLAGS) LinkedList.c -c	
+
 clean :
 	rm -f $(EXEC) $(OBJ)

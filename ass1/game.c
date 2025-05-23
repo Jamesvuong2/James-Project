@@ -8,8 +8,56 @@
 #include "terminal.h"
 #include "game.h"
 #include "newSleep.h"
+#include "LinkedList.h"
 
 /* Initialises the functions */
+
+void saveGameState(LinkedList *history, int **data, int rows, int cols, int playerRow, int playerCol, int enemydirection) {
+    int i;
+    GameState *state = malloc(sizeof(GameState));
+    state->rows = rows;
+    state->cols = cols;
+    state->playerRow = playerRow;
+    state->playerCol = playerCol;
+    state->enemydirection = enemydirection;
+
+    /* Allocate memory for the game board */
+    state->data = malloc(rows * sizeof(int *));
+    for (i = 0; i < rows; i++) {
+        state->data[i] = malloc(cols * sizeof(int));
+        memcpy(state->data[i], data[i], cols * sizeof(int)); /* Copy the board */
+    }
+
+    insertLast(history, state); /* Add the state to the linked list */
+}
+
+int undoLastTurn(LinkedList *history, int **data, int *playerRow, int *playerCol, int *enemydirection) {
+    int i;
+    /* Remove the last saved state */
+    GameState *state;
+
+    if (history->count == 0) {
+        printf("No moves to undo.\n");
+        return 0; /* Undo unsuccessful */
+    }
+
+    state = removeLast(history);
+
+    /* Restore the game board */
+    for (i = 0; i < state->rows; i++) {
+        memcpy(data[i], state->data[i], state->cols * sizeof(int));
+        free(state->data[i]);
+    }
+    free(state->data);
+
+    /* Restore player and enemy positions */
+    *playerRow = state->playerRow;
+    *playerCol = state->playerCol;
+    *enemydirection = state->enemydirection;
+
+    free(state); /* Free the state object */
+    return 1; /* Undo successful */
+}
 
 void initRandom()
 {
@@ -103,6 +151,7 @@ int movePlayer(int **data, int rows, int cols, char direction)
 
 void game(char *filename)
 {
+    LinkedList *gameHistory;
     int enemydirection;
     int rows, cols;
     int i, j, k;
@@ -162,8 +211,9 @@ void game(char *filename)
     }
 
     fclose(pf);
-
+    gameHistory = createLinkedList();
     while (1) {
+        saveGameState(gameHistory, data, rows, cols, playerRow, playerCol, enemydirection);
         /* Prints the map */
         printf("*");
         for (j = 0; j < cols; j++) {
@@ -272,6 +322,15 @@ void game(char *filename)
                "a moves the player one block left.\n"
                "d moves the player one block right.\n");
         input = interface();
+        
+        if (input == 'u') {
+            /* Undo the last turn */
+            if (undoLastTurn(gameHistory, data, &playerRow, &playerCol, &enemydirection)) {
+                printf("Undo successful.\n");
+            }
+            continue; /* Skip the rest of the loop */
+        }
+
 
         /* Moves the player based on the input */
         result = movePlayer(data, rows, cols, input);
